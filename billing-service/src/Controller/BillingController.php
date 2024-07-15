@@ -35,7 +35,6 @@ class BillingController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        // Valider les données requises
         if (!isset($data['amount']) || !isset($data['due_date']) || !isset($data['customer_email'])) {
             return new JsonResponse(['status' => 'Missing required data'], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -48,8 +47,8 @@ class BillingController extends AbstractController
         $entityManager->persist($billing);
         $entityManager->flush();
 
-        // Communication avec Notification Service pour envoyer la notification
-        $notificationUrl = 'http://notification-service.local/notify';  // À adapter selon votre configuration réseau
+       
+        $notificationUrl = 'http://notification-service.local/notify';  
         $client = HttpClient::create();
         $response = $client->request('POST', $notificationUrl, [
             'json' => [
@@ -59,13 +58,11 @@ class BillingController extends AbstractController
             ]
         ]);
 
-        // Vérifier la réponse du Notification Service
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 201) {
             return new JsonResponse(['status' => 'Failed to send notification to Notification Service'], $statusCode);
         }
 
-        // Si tout est OK, retourner la réponse
         return new JsonResponse(['status' => 'Billing created and notification sent'], JsonResponse::HTTP_CREATED);
     }
 
@@ -109,3 +106,5 @@ class BillingController extends AbstractController
         return new JsonResponse(['status' => 'Billing deleted!'], JsonResponse::HTTP_OK);
     }
 }
+
+
