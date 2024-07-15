@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\InvoiceRepository;
+use App\Repository\BillingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: InvoiceRepository::class)]
-class Invoice
+#[ORM\Entity(repositoryClass: BillingRepository::class)]
+class Billing
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,10 +18,10 @@ class Invoice
     private ?float $amount = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dueDate = null;
+    private ?\DateTimeInterface $due_date = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $customerEmail = null;
+    private ?string $customer_email = null;
 
     public function getId(): ?int
     {
@@ -42,24 +42,24 @@ class Invoice
 
     public function getDueDate(): ?\DateTimeInterface
     {
-        return $this->dueDate;
+        return $this->due_date;
     }
 
-    public function setDueDate(\DateTimeInterface $dueDate): static
+    public function setDueDate(\DateTimeInterface $due_date): static
     {
-        $this->dueDate = $dueDate;
+        $this->due_date = $due_date;
 
         return $this;
     }
 
     public function getCustomerEmail(): ?string
     {
-        return $this->customerEmail;
+        return $this->customer_email;
     }
 
-    public function setCustomerEmail(string $customerEmail): static
+    public function setCustomerEmail(string $customer_email): static
     {
-        $this->customerEmail = $customerEmail;
+        $this->customer_email = $customer_email;
 
         return $this;
     }
