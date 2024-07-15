@@ -10,8 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
-#[Route('/invoice', name: 'invoice_')]
-class InvoiceController extends AbstractController
+#[Route('/billing', name: 'billing')]
+class BillingController extends AbstractController
 {
     #[Route('/read/{id}', name: 'read', methods: ['GET'])]
     public function read($id, EntityManagerInterface $entityManager): JsonResponse
