@@ -10,8 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
-#[Route('/billing', name: 'billing_')]
-class BillingController extends AbstractController
+#[Route('/invoice', name: 'invoice_')]
+class InvoiceController extends AbstractController
 {
     #[Route('/read/{id}', name: 'read', methods: ['GET'])]
     public function read($id, EntityManagerInterface $entityManager): JsonResponse
@@ -35,6 +35,7 @@ class BillingController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        // Valider les données requises
         if (!isset($data['amount']) || !isset($data['due_date']) || !isset($data['customer_email'])) {
             return new JsonResponse(['status' => 'Missing required data'], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -47,7 +48,8 @@ class BillingController extends AbstractController
         $entityManager->persist($billing);
         $entityManager->flush();
 
-        $notificationUrl = 'http://notification-service.local/notify';
+        // Communication avec Notification Service pour envoyer la notification
+        $notificationUrl = 'http://notification-service.local/notify';  // À adapter selon votre configuration réseau
         $client = HttpClient::create();
         $response = $client->request('POST', $notificationUrl, [
             'json' => [
@@ -57,11 +59,13 @@ class BillingController extends AbstractController
             ]
         ]);
 
+        // Vérifier la réponse du Notification Service
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 201) {
             return new JsonResponse(['status' => 'Failed to send notification to Notification Service'], $statusCode);
         }
 
+        // Si tout est OK, retourner la réponse
         return new JsonResponse(['status' => 'Billing created and notification sent'], JsonResponse::HTTP_CREATED);
     }
 
